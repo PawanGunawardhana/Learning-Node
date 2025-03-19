@@ -20,6 +20,10 @@ const server = require("http").createServer((req, res) => {
       path += "about.html";
       res.statusCode = 200;
       break;
+    case "/about-me": //redirecting to "/about"
+      res.statusCode = 301; //301 means resource has moved permantently
+      res.setHeader("Location", "/about");
+      break;
     default:
       path += "404.html";
       res.statusCode = 404;
