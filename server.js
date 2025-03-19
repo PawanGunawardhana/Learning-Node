@@ -9,13 +9,28 @@ const server = require("http").createServer((req, res) => {
 
   res.setHeader("Content-Type", "text/html");
 
-  fs.readFile("./views/index.html", (err, data) => {
+  let path = "./views/";
+
+  switch (req.url) {
+    case "/":
+      path += "index.html";
+      break;
+    case "/about":
+      path += "about.html";
+      break;
+    default:
+      path += "404.html";
+      break;
+  }
+
+    //send a html file
+  fs.readFile(path, (err, data) => {
     if (err) {
-        console.log(err);
-        res.end(); //if there is an error if we didnt add this res.end() browser will seeking a response,so we want to stop that
+      console.log(err);
+      res.end(); //if there is an error if we didnt add this res.end() browser will seeking a response,so we want to stop that
     }
-    console.log(data.toString());
-    console.log(data.toString);
+    //console.log(data.toString());
+    //console.log(data.toString);
     console.log(data);
     console.log("file read");
 
