@@ -1,9 +1,20 @@
 const http = require("http");
 const fs = require("fs");
+const _ = require('lodash');
 
 const server = require("http").createServer((req, res) => {
   console.log("request made");
   console.log(req.url, req.method);
+
+    const num = _.random(0, 20);
+    console.log(num);
+
+    const greet = _.once(() => { // lodash allows us to call the function only once..
+        console.log("hello");
+    }
+)
+    greet();
+    greet();
 
   //set header content type
 
