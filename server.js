@@ -14,16 +14,19 @@ const server = require("http").createServer((req, res) => {
   switch (req.url) {
     case "/":
       path += "index.html";
+      res.statusCode = 200;
       break;
     case "/about":
       path += "about.html";
+      res.statusCode = 200;
       break;
     default:
       path += "404.html";
+      res.statusCode = 404;
       break;
   }
 
-    //send a html file
+  //send a html file
   fs.readFile(path, (err, data) => {
     if (err) {
       console.log(err);
