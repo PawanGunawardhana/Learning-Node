@@ -3,18 +3,29 @@ const express = require("express"); //this returns a function and stored in expr
 //express app
 const app = express(); //invoke that created function to create an instance of express app
 
+//register view engine
+app.set('view engine', 'ejs');
+
+
+
 //listen for requests
 app.listen(3000); //automatically refers to localhost
 
 app.get("/", (req, res) => {
   //console.log(req.url, req.hostname, req.method);
   //res.send('<p>hi</p>');
-  res.sendFile("./views/index.html", { root: __dirname });
+    // res.sendFile("./views/index.html", { root: __dirname });
+    res.render('index');
 });
 
 app.get("/about", (req, res) => {
-  res.sendFile("./views/about.html", { root: __dirname });
+    //res.sendFile("./views/about.html", { root: __dirname });
+    res.render('about');
 });
+
+app.get('/blogs/create', (req, res) => {
+    res.render('create');
+} )
 
 //redirects
 app.get("/about-me", (req, res) => {
@@ -23,5 +34,6 @@ app.get("/about-me", (req, res) => {
 
 //404
 app.use((req, res) => {
-  res.status(404).sendFile("./views/404.html", { root: __dirname });
+  //res.status(404).sendFile("./views/404.html", { root: __dirname });
+    res.status(404).render('404')
 });
