@@ -14,7 +14,17 @@ app.get("/", (req, res) => {
   //console.log(req.url, req.hostname, req.method);
   //res.send('<p>hi</p>');
   // res.sendFile("./views/index.html", { root: __dirname });
-  res.render("index", { title: "Home" });
+
+  const blogs = [
+    { title: "A Star in the sky", snippet: "lorem ipsum dolor sit amet" },
+    { title: "what is True love", snippet: "lorem ipsum dolor sit amet" },
+    {
+      title: "A ship that sails on the sea",
+      snippet: "lorem ipsum dolor sit amet",
+    },
+  ];
+
+  res.render("index", { title: "Home", blogs: blogs });
 });
 
 app.get("/about", (req, res) => {

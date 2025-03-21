@@ -1,32 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document | <%= title %></title>
+    <title>Document | <%= title %>
+    </title>
 </head>
+
 <body>
 
     <!-- <//% const name = 'PAWAN' %> ejs dynamic inject to html -->
-    
+
 
     <nav>
         <div class="site-title">
             <!-- <p><//%= name %></p>  -->
             <!--to print the value we use = sign-->
-            <a href="/"><h1>Pawan Blog </h1></a>
+            <a href="/">
+                <h1>Pawan Blog </h1>
+            </a>
             <p>Pawan gunawardhana Site</p>
         </div>
-       <ul>
-        <li><a href="/">Blogs</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/blogs/create">New Blog</a></li>
-       </ul>
+        <ul>
+            <li><a href="/">Blogs</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/blogs/create">New Blog</a></li>
+        </ul>
     </nav>
 
     <div class="blogs content">
         <h2>All Blogs</h2>
+
+        <% if (blogs.length> 0) { %>
+            <% blogs.forEach(blog=> { %>
+                <h3 class="title">
+                    <%= blog.title %>
+                </h3>
+                <p class="snippet">
+                    <%= blog.snippet %>
+                </p>
+                <% }) %>
+                    <% }else { %>
+                        <p>There are no blogs to show</p>
+                        <% } %>
+
+                         
+
+
     </div>
-    
 </body>
+
 </html>
