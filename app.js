@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   //console.log(req.url, req.hostname, req.method);
   //res.send('<p>hi</p>');
     // res.sendFile("./views/index.html", { root: __dirname });
-    res.render('index');
+    res.render('index',{title : 'Home'});
 });
 
 app.get("/about", (req, res) => {
