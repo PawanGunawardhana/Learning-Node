@@ -7,6 +7,16 @@ const app = express(); //invoke that created function to create an instance of e
 //register view engine
 app.set("view engine", "ejs");
 
+//use method
+app.use((req, res, next) => {
+  console.log("Hello from middleware");
+  console.log('host : ', req.hostname);
+  console.log('path : ', req.path);
+  console.log('method : ', req.method);
+  next();
+
+}); //without next() code doesnot know where to go to next,so we have to tell that explicitly.
+
 //listen for requests
 app.listen(3000); //automatically refers to localhost
 
@@ -30,6 +40,12 @@ app.get("/", (req, res) => {
 app.get("/about", (req, res) => {
   //res.sendFile("./views/about.html", { root: __dirname });
   res.render("about", { title: "About" });
+
+  app.use((req, res, next) => {
+    console.log("Hello from 2nd middleware");
+    next();
+  
+  });//this will never fire, because it coded after the res.render line. now the backend is giving a res to the browser and will not go for bottom codes to execute.
 });
 
 app.get("/blogs/create", (req, res) => {
