@@ -1,7 +1,13 @@
 const express = require("express"); //this returns a function and stored in express cont
 const morgan = require('morgan');
+
+
 //express app
 const app = express(); //invoke that created function to create an instance of express app
+
+//connect to mongoDB
+const dbURI = 'mongodb+srv://adpigunawardhana2:ADPIG1234@nodetuts.j9d96.mongodb.net/?retryWrites=true&w=majority&appName=NodeTuts';
+
 
 //register view engine
 app.set("view engine", "ejs");
