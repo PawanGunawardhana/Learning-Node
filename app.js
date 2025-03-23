@@ -1,7 +1,7 @@
 const express = require("express"); //this returns a function and stored in express cont
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const Blog = require("./models/blog");
+const blogRoutes = require("./routes/blogRoutes");
 
 //express app
 const app = express(); //invoke that created function to create an instance of express app
@@ -108,63 +108,8 @@ app.get("/about", (req, res) => {
 
 // //blog routes
 
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Create" });
-});
-
-app.get("/blogs", (req, res) => {
-  Blog.find()
-    .sort({ createdAt: -1 })
-    .then((result) => {
-      res.render("index", { title: "All blogs", blogs: result });
-    })
-    .catch((err) => {
-      res.status(404).send("No blogs found", err);
-      console.log(err);
-    });
-});
-
-//POST requests
-app.post("/blogs", (req, res) => {
-  const blog = new Blog(req.body);
-  blog
-    .save()
-    .then((result) => {
-      console.log("Blog added to database successfully", req.body);
-      res.redirect("/blogs");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-//Route parameters
-app.get("/blogs/:id", (req, res) => {
-  //if dont use : in parameters then it will consider the actual value
-  const id = req.params.id;
-  console.log(id);
-  Blog.findById(id)
-    .then((result) => {
-      res.render("details", { blog: result, title: "Blog Details" });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-//DELETE requests
-app.delete("/blogs/:id", (req, res) => {
-  const id = req.params.id;
-
-  Blog.findByIdAndDelete(id)
-    .then((result) => {
-      //this will pass to the browser
-      res.json({ redirect: "/blogs" });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// app.use(blogRoutes);
+app.use("/blogs", blogRoutes); //this is the same as the above line, but this is more clear and readable.
 
 //redirects
 app.get("/about-me", (req, res) => {
