@@ -25,84 +25,94 @@ mongoose
 app.set("view engine", "ejs");
 
 //use method
-app.use((req, res, next) => {
-  console.log("Hello from middleware");
-  console.log("host : ", req.hostname);
-  console.log("path : ", req.path);
-  console.log("method : ", req.method);
-  next();
-}); //without next() code doesnot know where to go to next,so we have to tell that explicitly.
+// app.use((req, res, next) => {
+//   console.log("Hello from middleware");
+//   console.log("host : ", req.hostname);
+//   console.log("path : ", req.path);
+//   console.log("method : ", req.method);
+//   next();
+// }); //without next() code doesnot know where to go to next,so we have to tell that explicitly.
 
 //middleware & static files
 app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(morgan("tiny"));
 
-// mongoose and mongo sandbox routes
-app.get("/add-blog", (req, res) => {
-  const blog = new Blog({
-    title: "new blog 2",
-    snippet: "lorem ipsum and lorem kipsumt tonight sdf",
-    body: "read my blog further",
-  });
-  blog.save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      res.status(400).send({ message: "Invalid request" });
-      console.log(err);
-    });
-});
+// // mongoose and mongo sandbox routes
+// app.get("/add-blog", (req, res) => {
+//   const blog = new Blog({
+//     title: "new blog 2",
+//     snippet: "lorem ipsum and lorem kipsumt tonight sdf",
+//     body: "read my blog further",
+//   });
+//   blog.save()
+//     .then((result) => {
+//       res.send(result);
+//     })
+//     .catch((err) => {
+//       res.status(400).send({ message: "Invalid request" });
+//       console.log(err);
+//     });
+// });
 
-//get data from the database
-app.get("/all-blogs", (req, res) => {
-  Blog.find()
-    .then((result) => {
-    res.send(result);
-  }).catch((err) => {
-    console.log(err);
-  })
-});
+// //get data from the database
+// app.get("/all-blogs", (req, res) => {
+//   Blog.find()
+//     .then((result) => {
+//     res.send(result);
+//   }).catch((err) => {
+//     console.log(err);
+//   })
+// });
 
-
-app.get('/single-blog', (req, res) => {
-  Blog.findById("67df97e830cd4408fc355ec7")
-    .then((result) => {
-      res.send(result);
-    }).catch((err) => {
-      res.status(400).send(err);
-      console.log(err);
-    });
-});
-
+// app.get('/single-blog', (req, res) => {
+//   Blog.findById("67df97e830cd4408fc355ec7")
+//     .then((result) => {
+//       res.send(result);
+//     }).catch((err) => {
+//       res.status(400).send(err);
+//       console.log(err);
+//     });
+// });
 
 // routes
 app.get("/", (req, res) => {
+  res.redirect("/blogs");
   //console.log(req.url, req.hostname, req.method);
   //res.send('<p>hi</p>');
   // res.sendFile("./views/index.html", { root: __dirname });
 
-  const blogs = [
-    { title: "A Star in the sky", snippet: "lorem ipsum dolor sit amet" },
-    { title: "what is True love", snippet: "lorem ipsum dolor sit amet" },
-    {
-      title: "A ship that sails on the sea",
-      snippet: "lorem ipsum dolor sit amet",
-    },
-  ];
+  // const blogs = [
+  //   { title: "A Star in the sky", snippet: "lorem ipsum dolor sit amet" },
+  //   { title: "what is True love", snippet: "lorem ipsum dolor sit amet" },
+  //   {
+  //     title: "A ship that sails on the sea",
+  //     snippet: "lorem ipsum dolor sit amet",
+  //   },
+  // ];
 
-  res.render("index", { title: "Home", blogs: blogs });
+  // res.render("index", { title: "Home", blogs: blogs });
 });
 
 app.get("/about", (req, res) => {
   //res.sendFile("./views/about.html", { root: __dirname });
   res.render("about", { title: "About" });
 
-  app.use((req, res, next) => {
-    console.log("Hello from 2nd middleware");
-    next();
-  }); //this will never fire, because it coded after the res.render line. now the backend is giving a res to the browser and will not go for bottom codes to execute.
+  // app.use((req, res, next) => {
+  //   console.log("Hello from 2nd middleware");
+  //   next();
+  // }); //this will never fire, because it coded after the res.render line. now the backend is giving a res to the browser and will not go for bottom codes to execute.
+});
+
+//blog routes
+app.get("/blogs", (req, res) => {
+  Blog.find().sort({createdAt: -1})
+    .then((result) => {
+      res.render("index", { title: "All blogs", blogs: result });
+    })
+    .catch((err) => {
+      res.status(404).send("No blogs found", err);
+    });
 });
 
 app.get("/blogs/create", (req, res) => {
