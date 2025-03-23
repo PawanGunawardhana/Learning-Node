@@ -23,6 +23,7 @@ mongoose
 
 //register view engine
 app.set("view engine", "ejs");
+//app.set('views', 'myviews');
 
 // //use method
 // // app.use((req, res, next) => {
