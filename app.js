@@ -1,13 +1,25 @@
 const express = require("express"); //this returns a function and stored in express cont
-const morgan = require('morgan');
-
+const morgan = require("morgan");
+const mongoose = require("mongoose");
+const Blog = require("./models/blog");
 
 //express app
 const app = express(); //invoke that created function to create an instance of express app
 
 //connect to mongoDB
-const dbURI = 'mongodb+srv://adpigunawardhana2:ADPIG1234@nodetuts.j9d96.mongodb.net/?retryWrites=true&w=majority&appName=NodeTuts';
-
+const dbURI =
+  "mongodb+srv://NewPawan:ADPIG1234@nodetuts.j9d96.mongodb.net/NodeTuts?retryWrites=true&w=majority&appName=NodeTuts";
+//asynchronous task
+mongoose
+  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) => {
+    console.log("connected to database");
+    //listen for requests
+    app.listen(3000); //automatically refers to localhost
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 //register view engine
 app.set("view engine", "ejs");
@@ -15,18 +27,57 @@ app.set("view engine", "ejs");
 //use method
 app.use((req, res, next) => {
   console.log("Hello from middleware");
-  console.log('host : ', req.hostname);
-  console.log('path : ', req.path);
-  console.log('method : ', req.method);
+  console.log("host : ", req.hostname);
+  console.log("path : ", req.path);
+  console.log("method : ", req.method);
   next();
-
 }); //without next() code doesnot know where to go to next,so we have to tell that explicitly.
 
-//listen for requests
-app.listen(3000); //automatically refers to localhost
+//middleware & static files
+app.use(express.static("public"));
+app.use(morgan("dev"));
+app.use(morgan("tiny"));
 
-app.use(morgan('tiny'));
+// mongoose and mongo sandbox routes
+app.get("/add-blog", (req, res) => {
+  const blog = new Blog({
+    title: "new blog 2",
+    snippet: "lorem ipsum and lorem kipsumt tonight sdf",
+    body: "read my blog further",
+  });
+  blog.save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      res.status(400).send({ message: "Invalid request" });
+      console.log(err);
+    });
+});
 
+//get data from the database
+app.get("/all-blogs", (req, res) => {
+  Blog.find()
+    .then((result) => {
+    res.send(result);
+  }).catch((err) => {
+    console.log(err);
+  })
+});
+
+
+app.get('/single-blog', (req, res) => {
+  Blog.findById("67df97e830cd4408fc355ec7")
+    .then((result) => {
+      res.send(result);
+    }).catch((err) => {
+      res.status(400).send(err);
+      console.log(err);
+    });
+});
+
+
+// routes
 app.get("/", (req, res) => {
   //console.log(req.url, req.hostname, req.method);
   //res.send('<p>hi</p>');
@@ -51,8 +102,7 @@ app.get("/about", (req, res) => {
   app.use((req, res, next) => {
     console.log("Hello from 2nd middleware");
     next();
-  
-  });//this will never fire, because it coded after the res.render line. now the backend is giving a res to the browser and will not go for bottom codes to execute.
+  }); //this will never fire, because it coded after the res.render line. now the backend is giving a res to the browser and will not go for bottom codes to execute.
 });
 
 app.get("/blogs/create", (req, res) => {
