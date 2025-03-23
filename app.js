@@ -123,12 +123,24 @@ app.post("/blogs", (req, res) => {
   blog
     .save()
     .then((result) => {
-      console.log('Blog added to database successfully', req.body)
+      console.log("Blog added to database successfully", req.body);
       res.redirect("/blogs");
     })
     .catch((err) => {
       console.log(err);
     });
+});
+
+//Route parameters
+app.get("/blogs/:id", (req, res) => { //if dont use : in parameters then it will consider the actual value
+  const id = req.params.id;
+  console.log(id);
+  Blog.findById(id).then((result) => {
+    res.render('details', { blog: result, title: 'Blog Details'})
+  })
+    .catch((err) => {
+      console.log(err);
+  })
 });
 
 app.get("/blogs/create", (req, res) => {
