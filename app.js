@@ -24,14 +24,14 @@ mongoose
 //register view engine
 app.set("view engine", "ejs");
 
-//use method
-// app.use((req, res, next) => {
-//   console.log("Hello from middleware");
-//   console.log("host : ", req.hostname);
-//   console.log("path : ", req.path);
-//   console.log("method : ", req.method);
-//   next();
-// }); //without next() code doesnot know where to go to next,so we have to tell that explicitly.
+// //use method
+// // app.use((req, res, next) => {
+// //   console.log("Hello from middleware");
+// //   console.log("host : ", req.hostname);
+// //   console.log("path : ", req.path);
+// //   console.log("method : ", req.method);
+// //   next();
+// // }); //without next() code doesnot know where to go to next,so we have to tell that explicitly.
 
 //middleware & static files
 app.use(express.static("public"));
@@ -39,44 +39,45 @@ app.use(express.urlencoded({ extended: true }));
 //app.use(morgan("dev"));
 //app.use(morgan("tiny"));
 
-// // mongoose and mongo sandbox routes
-// app.get("/add-blog", (req, res) => {
-//   const blog = new Blog({
-//     title: "new blog 2",
-//     snippet: "lorem ipsum and lorem kipsumt tonight sdf",
-//     body: "read my blog further",
-//   });
-//   blog.save()
-//     .then((result) => {
-//       res.send(result);
-//     })
-//     .catch((err) => {
-//       res.status(400).send({ message: "Invalid request" });
-//       console.log(err);
-//     });
-// });
+// // // mongoose and mongo sandbox routes
+// // app.get("/add-blog", (req, res) => {
+// //   const blog = new Blog({
+// //     title: "new blog 2",
+// //     snippet: "lorem ipsum and lorem kipsumt tonight sdf",
+// //     body: "read my blog further",
+// //   });
+// //   blog.save()
+// //     .then((result) => {
+// //       res.send(result);
+// //     })
+// //     .catch((err) => {
+// //       res.status(400).send({ message: "Invalid request" });
+// //       console.log(err);
+// //     });
+// // });
 
-// //get data from the database
-// app.get("/all-blogs", (req, res) => {
-//   Blog.find()
-//     .then((result) => {
-//     res.send(result);
-//   }).catch((err) => {
-//     console.log(err);
-//   })
-// });
+// // //get data from the database
+// // app.get("/all-blogs", (req, res) => {
+// //   Blog.find()
+// //     .then((result) => {
+// //     res.send(result);
+// //   }).catch((err) => {
+// //     console.log(err);
+// //   })
+// // });
 
-// app.get('/single-blog', (req, res) => {
-//   Blog.findById("67df97e830cd4408fc355ec7")
-//     .then((result) => {
-//       res.send(result);
-//     }).catch((err) => {
-//       res.status(400).send(err);
-//       console.log(err);
-//     });
-// });
+// // app.get('/single-blog', (req, res) => {
+// //   Blog.findById("67df97e830cd4408fc355ec7")
+// //     .then((result) => {
+// //       res.send(result);
+// //     }).catch((err) => {
+// //       res.status(400).send(err);
+// //       console.log(err);
+// //     });
+// // });
 
-// routes
+// Routes
+
 app.get("/", (req, res) => {
   res.redirect("/blogs");
   //console.log(req.url, req.hostname, req.method);
@@ -105,7 +106,12 @@ app.get("/about", (req, res) => {
   // }); //this will never fire, because it coded after the res.render line. now the backend is giving a res to the browser and will not go for bottom codes to execute.
 });
 
-//blog routes
+// //blog routes
+
+app.get("/blogs/create", (req, res) => {
+  res.render("create", { title: "Create" });
+});
+
 app.get("/blogs", (req, res) => {
   Blog.find()
     .sort({ createdAt: -1 })
@@ -114,6 +120,7 @@ app.get("/blogs", (req, res) => {
     })
     .catch((err) => {
       res.status(404).send("No blogs found", err);
+      console.log(err);
     });
 });
 
@@ -132,19 +139,31 @@ app.post("/blogs", (req, res) => {
 });
 
 //Route parameters
-app.get("/blogs/:id", (req, res) => { //if dont use : in parameters then it will consider the actual value
+app.get("/blogs/:id", (req, res) => {
+  //if dont use : in parameters then it will consider the actual value
   const id = req.params.id;
   console.log(id);
-  Blog.findById(id).then((result) => {
-    res.render('details', { blog: result, title: 'Blog Details'})
-  })
+  Blog.findById(id)
+    .then((result) => {
+      res.render("details", { blog: result, title: "Blog Details" });
+    })
     .catch((err) => {
       console.log(err);
-  })
+    });
 });
 
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Create" });
+//DELETE requests
+app.delete("/blogs/:id", (req, res) => {
+  const id = req.params.id;
+
+  Blog.findByIdAndDelete(id)
+    .then((result) => {
+      //this will pass to the browser
+      res.json({ redirect: "/blogs" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 //redirects
