@@ -35,8 +35,9 @@ app.set("view engine", "ejs");
 
 //middleware & static files
 app.use(express.static("public"));
-app.use(morgan("dev"));
-app.use(morgan("tiny"));
+app.use(express.urlencoded({ extended: true }));
+//app.use(morgan("dev"));
+//app.use(morgan("tiny"));
 
 // // mongoose and mongo sandbox routes
 // app.get("/add-blog", (req, res) => {
@@ -106,12 +107,27 @@ app.get("/about", (req, res) => {
 
 //blog routes
 app.get("/blogs", (req, res) => {
-  Blog.find().sort({createdAt: -1})
+  Blog.find()
+    .sort({ createdAt: -1 })
     .then((result) => {
       res.render("index", { title: "All blogs", blogs: result });
     })
     .catch((err) => {
       res.status(404).send("No blogs found", err);
+    });
+});
+
+//POST requests
+app.post("/blogs", (req, res) => {
+  const blog = new Blog(req.body);
+  blog
+    .save()
+    .then((result) => {
+      console.log('Blog added to database successfully', req.body)
+      res.redirect("/blogs");
+    })
+    .catch((err) => {
+      console.log(err);
     });
 });
 
